@@ -1,0 +1,16 @@
+## Public Summary
+
+### General Summary (Public)
+For the quarter ended 31 March 2025, the fund reported a modest decline in net asset value and a net deficit driven primarily by unrealised markdowns across the investment portfolio and ongoing fund expenses. The portfolio remained highly invested, with over 95% of total commitments contributed net of qualified distributions. Activity during the quarter included new follow-on deployment, return of capital from certain investments, and use of the subscription-backed credit facility to bridge funding needs.
+
+### Strategy
+The fund is pursuing a broad private equity strategy focused on equity and equity-related securities across multiple sectors. The portfolio remains substantially deployed, indicating a mature investment period with emphasis on follow-on investing and portfolio management rather than large-scale new platform buildout. Quarter activity included add-on investments in selected portfolio companies and partial returns of capital from others, suggesting an active ownership and capital recycling posture. Overall tone appears disciplined and selective rather than aggressively risk-on.
+
+### Risks & Stress
+The quarter reflected valuation pressure, with net unrealised losses reducing overall fund value. The fund also carries subscription facility leverage, which increased during the period, creating financing cost exposure and reliance on timely capital call support from remaining unfunded commitments. The valuation framework relies materially on unobservable inputs and manager judgment for private assets, so reported values remain sensitive to changes in earnings, comparable multiples, leverage assumptions, tax rates, and liquidity discounts. The facility is secured by capital call rights and bank accounts and is subject to financial covenant compliance.
+
+### Fund Operations & Governance
+The vehicle is a regulated limited partnership and prepares unaudited quarterly financial statements under US GAAP, with certain disclosure exceptions, on a combined basis with affiliated alternative investment vehicles used for legal, tax, or regulatory structuring. The manager classifies the vehicle as an investment company and therefore holds investments at fair value rather than consolidating underlying portfolio companies. Fair value is determined at least semi-annually using market prices where available and otherwise valuation techniques aligned with private equity valuation guidelines, including earnings multiples, asset-based methods, recent transaction pricing, and industry benchmarks. Management fees stepped down from a commitment-based rate to a lower rate applied to acquisition cost of unrealised investments beginning in May 2024. The credit facility includes a sustainability-linked pricing adjustment, with a small margin reduction effective shortly after quarter-end following submission of a compliance certificate.
+
+### Performance (Censored)
+Portfolio performance was negative for the quarter, with the fund recording a net deficit and broad unrealised value erosion. Despite the quarterly decline, the portfolio remains materially above aggregate cost overall, indicating that cumulative value creation since inception is still positive. Performance dispersion appears present across assets, with some holdings appreciating and others marked down sharply.

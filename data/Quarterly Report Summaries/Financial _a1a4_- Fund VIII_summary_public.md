@@ -1,0 +1,16 @@
+## Public Summary
+
+### General Summary (Public)
+The report covers an unaudited quarterly period ending 30 June 2024 for a large private equity partnership that co-invests alongside related vehicles. Net asset value increased materially during the period, driven primarily by unrealised appreciation across the investment portfolio. The fund remained in an active deployment phase, with substantial new investment purchases, several initial investments, selected add-on investments, and a modest amount of proceeds and capital returned from existing holdings. Capital call activity accelerated, and the fund also made use of its subscription-backed revolving credit facility during the period.
+
+### Strategy
+The fund invests in a broad range of equity and equity-related securities and is structured as an investment company with an intention to realise capital gains typically within 3–5 years or when exits can be arranged. The quarter reflects a risk-on posture, with heavy deployment into both new platform investments and follow-on capital for existing positions. The portfolio spans multiple sectors including healthcare, logistics, digital services, consulting, consumer, software, sports rights, industrial distribution, infrastructure technology, gaming, and food-related businesses.
+
+### Risks & Stress
+The fund uses a large revolving credit facility to bridge capital calls, finance new and follow-on investments, and pay fees and expenses. This introduces leverage, interest cost, refinancing, and covenant compliance considerations, although the borrowers were reported to be in compliance during the quarter. Valuation risk remains significant because a substantial portion of the portfolio is marked using models with unobservable inputs, including earnings multiples, comparable company analysis, and adjustments for company-specific risks, leverage, tax, growth, and illiquidity. The report notes that changes in these assumptions can materially affect fair value and results. Portfolio dispersion is evident, with some assets marked below cost while others show strong appreciation.
+
+### Fund Operations & Governance
+The partnership is regulated in its domicile and prepares its accounts under US GAAP, with certain disclosure exceptions. Investments are held at fair value, with valuations performed at least semi-annually in accordance with private equity valuation guidelines. Unquoted investments are generally valued using earnings-based or asset-based methodologies, while actively traded securities are valued using market prices. The fund is exempt from consolidation as an investment company under applicable accounting guidance. The partnership term runs to 2031, with potential extensions subject to advisory board and investor approvals for orderly liquidation. The credit facility is secured by capital call rights and certain bank accounts.
+
+### Performance (Censored)
+Portfolio performance was positive in the quarter, with overall value increasing meaningfully and unrealised gains more than offsetting operating expenses and financing costs. The fund appears to be generating strong mark-to-market appreciation at the portfolio level, though performance is uneven across individual holdings, with both notable winners and some investments marked below cost. Realised activity remained limited relative to unrealised value creation.

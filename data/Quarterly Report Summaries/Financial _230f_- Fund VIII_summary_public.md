@@ -1,0 +1,16 @@
+## Public Summary
+
+### General Summary (Public)
+The report covers an active deployment quarter for a large European buyout vehicle and its co-investment structure. Net assets increased materially during the period, driven by substantial capital contributions, continued investment activity, and positive unrealized revaluation gains. The portfolio expanded significantly through multiple new investments and at least one follow-on investment, while modest realization activity and one return of capital were also recorded. The fund continued to use a large subscription-backed revolving credit facility to bridge investment funding, fees, and expenses.
+
+### Strategy
+The fund invests in a broad range of equity and equity-related securities and is structured to co-invest alongside affiliated vehicles. The stated holding approach is to acquire investments with the intention to resell for capital gain, typically within 3–5 years or when a suitable exit can be arranged. Activity during the quarter indicates a risk-on posture, with heavy deployment into new platform investments across multiple sectors and geographies, plus follow-on capital into an existing portfolio company.
+
+### Risks & Stress
+The fund employs substantial leverage through a revolving credit facility used to bridge capital calls and fund investments, management fees, and partnership expenses. The borrowing arrangements require maintenance of a debt ratio and are secured by capital call rights and bank accounts under specified default conditions. Valuations rely heavily on judgment and significant unobservable inputs for unquoted investments, including earnings multiples, comparable company analysis, adjustments for leverage, tax, growth, risk, and illiquidity, which can materially affect reported fair values. Derivative instruments may also be used to hedge currency and other risks, and such instruments may involve market risk in excess of recorded values.
+
+### Fund Operations & Governance
+The partnership is a Jersey limited partnership regulated in Jersey and prepares its accounts under US GAAP, with investment company treatment under Topic 946. Investments are carried at fair value, with the general partner estimating fair value at least semi-annually in accordance with the partnership agreement and private equity valuation guidelines. Valuation methods include quoted market prices where available and model-based approaches for unquoted holdings, such as EV/EBITDA, EV/EBIT, P/E, and asset-based methods. Management fees accrue at 1.5% per annum of total commitments, subject to fee offsets from portfolio company fees received by the manager or related parties. The fund term runs to 2031, with extension options subject to advisory board and investor approvals.
+
+### Performance (Censored)
+Portfolio performance was positive during the quarter, with net surplus driven by unrealized appreciation across the investment portfolio. Overall valuation uplift remained above cost at period end, indicating the portfolio was marked up on a net basis. However, performance was partly offset by management fees, due diligence and professional expenses, and financing costs associated with the credit facility. Realization activity was limited, so reported gains were primarily unrealized rather than crystallized.
