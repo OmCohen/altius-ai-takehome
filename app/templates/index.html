@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ app_title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Private equity quarterly reports</p>
+        <h1>{{ app_title }}</h1>
+        <p class="lede">Ask questions across the quarterly summary corpus and get grounded answers with citations to the underlying summary files and reporting periods.</p>
+        <div class="sample-row">
+          {% for question in sample_questions %}
+          <button class="chip" data-question="{{ question }}">{{ question }}</button>
+          {% endfor %}
+        </div>
+      </div>
+      <aside class="hero-panel">
+        <div class="panel-card">
+          <div class="panel-label">Coverage</div>
+          <div class="panel-value">Q2 2021 to Q3 2025</div>
+        </div>
+        <div class="panel-card">
+          <div class="panel-label">Behavior</div>
+          <div class="panel-value">Retrieval-first, citation-aware</div>
+        </div>
+        <div class="panel-card">
+          <div class="panel-label">Fallback</div>
+          <div class="panel-value">Says when the corpus does not support an answer</div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="chat-grid">
+      <div class="chat-panel">
+        <div id="messages" class="messages">
+          <article class="message assistant">
+            <div class="bubble">
+              Ask about valuations, strategy, NAV, subscription credit facilities, or cross-quarter changes. The app will cite the source summaries it used.
+            </div>
+          </article>
+        </div>
+
+        <form id="chat-form" class="composer">
+          <textarea id="question" rows="2" placeholder="Ask a question about the fund reports..."></textarea>
+          <button id="send-button" type="submit">Ask</button>
+        </form>
+      </div>
+
+      <aside class="sidebar">
+        <div class="sidebar-card">
+          <h2>How it works</h2>
+          <p>The app loads the markdown summaries, ranks the most relevant sections with TF-IDF, and optionally calls an LLM to turn those passages into a short answer.</p>
+        </div>
+        <div class="sidebar-card">
+          <h2>What you get</h2>
+          <p>Each answer includes cited source files and reporting periods. If the corpus does not support the question, the app says so rather than inventing an answer.</p>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    window.SAMPLE_QUESTIONS = {{ sample_questions | tojson }};
+    window.OPENAI_MODEL = {{ openai_model | tojson }};
+  </script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

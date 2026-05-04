@@ -1,72 +1,45 @@
-# Take-Home Assignment: Chatbot for PE Quarterly Reports
+# Altius AI Take-Home
 
-## Context
+This repository contains a working chat app for the quarterly report summaries. The app loads the corpus, retrieves the most relevant sections with TF-IDF, and answers in a browser with citations to the summary files and reporting periods.
 
-Private equity funds report to their limited partners on a quarterly basis. These reports are dense, repetitive across quarters, and contain a mix of narrative commentary (strategy, risks, governance) and financial data. Investors and deal teams routinely need to ask questions across many quarters — *"how did the fund's risk posture evolve in 2023?"*, *"which quarters mentioned use of the subscription credit facility?"*, *"what was the manager's commentary on valuations in Q1 2025?"* — and skimming dozens of PDFs is slow.
+## Run
 
-Your task is to build a chatbot that answers these kinds of questions over a corpus of quarterly report summaries.
+1. Copy `.env.example` to `.env` and set `OPENAI_API_KEY` if you want model-generated answers.
+2. Start the app with:
 
-## Your Task
+```bash
+docker compose up --build
+```
 
-Build a chatbot that:
+3. Open `http://localhost:8000`.
 
-1. Ingests the provided corpus of quarterly report summaries.
-2. Lets a user ask questions through a chat interface.
-3. Returns answers grounded in the provided documents, with citations to the source file(s) and reporting period.
+The app also works without an API key. In that mode, it returns an extractive, citation-first answer from the retrieved passages.
 
-The data has been derived from real PE fund reports; sensitive financial specifics have been removed or marked as censored. Design the system as if it were going into production for an investment team.
+## Architecture
 
-## What We Provide
+The system is split into four small layers:
 
-- **`data/Quarterly Report Summaries/`** — ~50 markdown files. Each is a summary of a single quarterly document (Volume 1 narrative report, Financial Statement, or Appendix VI). Summaries follow a consistent section structure: General Summary, Strategy, Risks & Stress, Fund Operations & Governance, Performance.
-- **`data/metadata.csv`** — One row per summary file, with columns: `Deal Name`, `File Name` (original source filename), `Date` (reporting period end, DD/MM/YYYY), `Summary File` (filename in the folder above), `File Size`, and `File Name in zip`.
+1. Corpus loading: [app/corpus.py](app/corpus.py) reads `data/metadata.csv` and the markdown summaries, normalizes dates, and chunks each document by heading.
+2. Retrieval: [app/retrieval.py](app/retrieval.py) uses a TF-IDF index over chunk text plus metadata, with a light bias toward the reporting period mentioned in the question.
+3. Answering: [app/answering.py](app/answering.py) either calls OpenAI over the retrieved sources or falls back to extractive answers when no key is set.
+4. UI/API: [app/main.py](app/main.py) serves the browser chat page and the `/chat`, `/search`, and `/health` endpoints.
 
-The corpus covers Q2 2021 through Q3 2025.
+The browser UI lives in [app/templates/index.html](app/templates/index.html), with styling and behavior in [app/static/styles.css](app/static/styles.css) and [app/static/app.js](app/static/app.js).
 
-## Requirements
+## Design Choices
 
-- Run from a single command: `docker compose up` (or equivalent) should bring up a working chatbot reachable via a web browser. We should not need to install Python or Node locally.
-- Provide a chat-style interface.
-- Cite sources. Every answer should reference the underlying summary file(s) and the relevant reporting period(s).
-- Handle out-of-scope questions gracefully. If the answer isn't in the corpus, the bot should say so rather than fabricate.
-- Accept any LLM / embedding / API keys via environment variables. Do not commit keys.
+I used TF-IDF instead of a full vector database because the corpus is small, the summaries are already concise, and the take-home benefits more from a simple, debuggable retrieval path than from extra infrastructure.
 
-You are free to choose the LLM, embedding model, vector store, framework, and overall approach. We care about the reasoning behind your choices, which you'll explain in the README.
+The app is retrieval-first and citation-first. If retrieval does not surface a relevant source, it says so instead of inventing an answer. That matters more than sounding polished.
 
-## Deliverables
+OpenAI support is optional and controlled by environment variables. This keeps the app usable in a local or offline review while still allowing higher-quality synthesis when an API key is available.
 
-Submit a Git repository (zip or link) containing:
+## Evaluation Plan
 
-1. **Source code.**
-2. **`Dockerfile`** and **`docker-compose.yml`** that bring the app up with a single command.
-3. **`README.md`** containing:
-   - Setup and run instructions
-   - A short architecture overview
-   - Key design decisions and tradeoffs
-   - A short note on how you'd evaluate this system more rigorously with more time
-   - Known limitations and what you'd improve next
-4. **`.env.example`** showing the expected environment variables (no real keys).
+With more time, I would measure retrieval quality on a labeled question set, compare exact-match and trend questions, and review citation accuracy separately from answer quality. I would also add a small regression suite with the sample questions and a few known out-of-scope prompts.
 
-## How We'll Evaluate
+## Limitations
 
-Roughly in order of importance:
+The current retrieval stack is lexical, so very paraphrased questions can miss relevant passages. I would next add hybrid retrieval with embeddings, better section-aware ranking, and more structured citation traces that point to exact evidence sentences.
 
-- **Does it work?** We can run it with one command, ask questions, and get sensible answers with citations.
-- **Quality of retrieval and answers.** We'll ask a mix of straightforward lookups, cross-quarter trend questions, and questions whose answers aren't in the corpus.
-- **Quality of thinking.** Your README should make us understand *why* you built it the way you did. We value honest tradeoffs over long feature lists.
-
-## Sample Questions
-
-Use these to sanity-check your system. They are not a hidden test set — we'll ask different questions when we evaluate.
-
-1. What was the fund's commentary on valuations in Q1 2025?
-2. How did the manager describe the use of the subscription credit facility across 2024?
-3. Has the fund's strategy shifted between 2022 and 2025?
-4. What happened to NAV in Q3 2023? *(Note: financial specifics are censored in the data — your bot should handle this honestly.)*
-5. What is the fund's policy on quarterly dividend distributions to LPs? *(Likely not in the corpus — see how your bot handles it.)*
-
-## Submission
-
-Send us a link to a Git repo (or a zip). If anything in the brief is unclear, feel free to reach out — otherwise, make a reasonable assumption, document it in the README, and proceed.
-
-Good luck, and have fun with it.
+The summaries are already censored, so some financial questions can only be answered at a high level. The app handles that honestly, but a richer source corpus would improve usefulness.
