@@ -7,7 +7,8 @@
       "out_of_scope": false,
       "min_sources": 1,
       "must_contain_any": ["valuation", "markdown", "net asset value", "nav"],
-      "source_period_any": ["Q1 2025", "2025"]
+      "source_period_any": ["Q1 2025", "2025"],
+      "answer_class": "supported"
     }
   },
   {
@@ -18,7 +19,8 @@
       "out_of_scope": false,
       "min_sources": 2,
       "must_contain_any": ["subscription", "credit facility", "capital call", "liquidity"],
-      "source_period_any": ["2024"]
+      "source_period_any": ["2024"],
+      "answer_class": "supported"
     }
   },
   {
@@ -29,7 +31,8 @@
       "out_of_scope": false,
       "min_sources": 2,
       "must_contain_any": ["strategy", "shift", "no material", "mandate"],
-      "source_period_any": ["2022", "2025"]
+      "source_period_any": ["2022", "2025"],
+      "answer_class": "supported"
     }
   },
   {
@@ -40,7 +43,8 @@
       "out_of_scope": false,
       "min_sources": 1,
       "must_contain_any": ["nav", "fair value", "above cost", "censor"],
-      "source_period_any": ["Q3 2023", "2023"]
+      "source_period_any": ["Q3 2023", "2023"],
+      "answer_class": "partial"
     }
   },
   {
@@ -50,7 +54,7 @@
     "expected": {
       "out_of_scope": true,
       "min_sources": 0,
-      "must_contain_any": ["couldn't find", "not found", "not in the corpus", "no relevant information"]
+      "answer_class": "refusal"
     }
   },
   {
@@ -58,10 +62,10 @@
     "label": "Paraphrased 2025 valuation question",
     "question": "In early 2025, did portfolio marks move up or down?",
     "expected": {
-      "out_of_scope": true,
-      "min_sources": 0,
-      "must_contain_any": ["couldn't find", "not found", "not in the corpus", "no relevant information"],
-      "source_period_any": ["2025"]
+      "out_of_scope": false,
+      "min_sources": 1,
+      "source_period_any": ["2025"],
+      "answer_class": "supported"
     }
   },
   {
@@ -71,7 +75,39 @@
     "expected": {
       "out_of_scope": true,
       "min_sources": 0,
-      "must_contain_any": ["couldn't find", "not found", "not in the corpus", "no relevant information"]
+      "answer_class": "refusal"
+    }
+  },
+  {
+    "id": "C08",
+    "label": "Off-topic weather question",
+    "question": "Will it rain in London tomorrow?",
+    "expected": {
+      "out_of_scope": true,
+      "min_sources": 0,
+      "answer_class": "refusal"
+    }
+  },
+  {
+    "id": "C09",
+    "label": "Future period outside corpus",
+    "question": "What was the fund's NAV in Q2 2030?",
+    "expected": {
+      "out_of_scope": true,
+      "min_sources": 0,
+      "answer_class": "refusal"
+    }
+  },
+  {
+    "id": "C10",
+    "label": "Q3 2025 valuation direction",
+    "question": "In Q3 2025, did portfolio fair value go up or down quarter over quarter?",
+    "expected": {
+      "out_of_scope": false,
+      "min_sources": 1,
+      "must_contain_any": ["up", "increase", "increased", "rose"],
+      "source_period_any": ["Q3 2025", "2025"],
+      "answer_class": "supported"
     }
   }
 ]
