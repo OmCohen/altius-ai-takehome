@@ -14,6 +14,7 @@ startup should fail rather than silently falling back to a weaker path.
 from __future__ import annotations
 
 import logging
+import re
 from typing import List
 
 import numpy as np
@@ -42,6 +43,8 @@ class HybridRetriever:
         corpus,
         tfidf_top_k: int = 50,
         embed_weight: float = 0.7,
+        min_final_score: float = 0.2,
+        min_source_coverage: float = 0.35,
         embedding_model_name: str = "all-MiniLM-L6-v2",
         reranker_model_name: str | None = None,
     ):
@@ -49,6 +52,8 @@ class HybridRetriever:
         self.base = Retriever(corpus)
         self.tfidf_top_k = tfidf_top_k
         self.embed_weight = float(embed_weight)
+        self.min_final_score = float(min_final_score)
+        self.min_source_coverage = float(min_source_coverage)
 
         self.embedding_model = SentenceTransformer(embedding_model_name)
         texts = [chunk.searchable_text for chunk in corpus.chunks]
@@ -63,6 +68,9 @@ class HybridRetriever:
         cleaned = question.strip()
         if not cleaned:
             return []
+        signal_tokens = self._signal_tokens(cleaned)
+        temporal_request = self._temporal_request(cleaned)
+        period_hints = self.base._period_hints(cleaned)
 
         # Stage 1: lexical TF-IDF candidate retrieval (use vectorizer/matrix from Retriever)
         qvec = self.base.vectorizer.transform([cleaned])
@@ -86,6 +94,9 @@ class HybridRetriever:
         combined = []
         for (idx, lex_score), emb_score in zip(candidates, emb_sims):
             combined_score = float(self.embed_weight * float(emb_score) + (1 - self.embed_weight) * float(lex_score))
+            chunk = self.corpus.chunks[idx]
+            if period_hints and self.base._matches_hint(chunk.reporting_period, chunk.date, period_hints):
+                combined_score += 0.08
             combined.append((idx, combined_score))
         candidates = sorted(combined, key=lambda t: t[1], reverse=True)
 
@@ -105,7 +116,7 @@ class HybridRetriever:
         # Convert top candidates to SourceCitation via same heuristics as Retriever
         best_by_document: dict[str, dict] = {}
         for idx, score in candidates[: top_k]:
-            if score <= 0:
+            if score < self.min_final_score:
                 continue
             chunk = self.corpus.chunks[idx]
             existing = best_by_document.get(chunk.document_id)
@@ -116,6 +127,11 @@ class HybridRetriever:
                 }
 
         ranked_sources = sorted(best_by_document.values(), key=lambda item: item["score"], reverse=True)[:max_sources]
+        if not self._matches_temporal_request(temporal_request, ranked_sources):
+            return []
+        if self._should_reject_match(signal_tokens, ranked_sources):
+            return []
+
         results: List[SourceCitation] = []
         for item in ranked_sources:
             chunk = item["chunk"]
@@ -129,11 +145,112 @@ class HybridRetriever:
                     deal_name=chunk.deal_name,
                     section=chunk.section,
                     citation_label=self._citation_label(chunk.reporting_period, chunk.source_file, chunk.section),
-                    excerpt=chunk.text[:360].strip(),
+                    excerpt=self.base._excerpt(chunk.text, cleaned),
                     score=round(float(item["score"]), 4),
                 )
             )
         return results
+
+    def _signal_tokens(self, question: str) -> set[str]:
+        return {
+            token.lower()
+            for token in re.findall(r"\w+", question)
+            if len(token) > 2
+        }
+
+    def _should_reject_match(self, signal_tokens: set[str], sources: list[dict]) -> bool:
+        if not sources:
+            return True
+
+        top_score = float(sources[0]["score"])
+        if top_score >= max(self.min_final_score + 0.12, 0.28):
+            return False
+
+        combined_text = " ".join(
+            " ".join(
+                [
+                    item["chunk"].text.lower(),
+                    (item["chunk"].section or "").lower(),
+                    item["chunk"].reporting_period.lower(),
+                    item["chunk"].source_file.lower(),
+                ]
+            )
+            for item in sources
+        )
+        if not signal_tokens:
+            return top_score < max(self.min_final_score + 0.06, 0.24)
+
+        matched = sum(1 for token in signal_tokens if token in combined_text)
+        coverage = matched / max(1, len(signal_tokens))
+        return coverage < self.min_source_coverage and top_score < max(self.min_final_score + 0.12, 0.28)
+
+    def _temporal_request(self, question: str) -> dict:
+        text = (question or "").lower()
+        quarter_year = re.findall(r"\bq([1-4])\s*(20\d{2})\b", text, flags=re.IGNORECASE)
+        years = set(re.findall(r"\b(20\d{2})\b", text))
+        early_years = set(re.findall(r"\bearly\s+(20\d{2})\b", text))
+        mid_years = set(re.findall(r"\bmid\s+(20\d{2})\b", text))
+        late_years = set(re.findall(r"\blate\s+(20\d{2})\b", text))
+        across_years = set(re.findall(r"\bacross\s+(20\d{2})\b", text))
+        between_years = re.findall(r"\bbetween\s+(20\d{2})\s+and\s+(20\d{2})\b", text)
+        for start, end in between_years:
+            years.add(start)
+            years.add(end)
+        years.update(across_years)
+        return {
+            "quarter_year": {(f"Q{q}".upper(), y) for q, y in quarter_year},
+            "years": years,
+            "early_years": early_years,
+            "mid_years": mid_years,
+            "late_years": late_years,
+        }
+
+    def _matches_temporal_request(self, temporal_request: dict, sources: list[dict]) -> bool:
+        if not sources:
+            return False
+        if not temporal_request:
+            return True
+
+        source_periods = [
+            str(item["chunk"].reporting_period or "").upper()
+            for item in sources
+            if item.get("chunk") is not None
+        ]
+        if not source_periods:
+            return False
+
+        source_quarter_year = set()
+        source_years = set()
+        for period in source_periods:
+            match = re.search(r"\bQ([1-4])\s+(20\d{2})\b", period)
+            if match:
+                q, y = match.groups()
+                source_quarter_year.add((f"Q{q}", y))
+                source_years.add(y)
+            else:
+                year_match = re.search(r"\b(20\d{2})\b", period)
+                if year_match:
+                    source_years.add(year_match.group(1))
+
+        expected_qy = temporal_request.get("quarter_year", set())
+        if expected_qy and not any(qy in source_quarter_year for qy in expected_qy):
+            return False
+
+        expected_years = temporal_request.get("years", set())
+        if expected_years and not expected_years.issubset(source_years):
+            return False
+
+        for year in temporal_request.get("early_years", set()):
+            if not any((q, y) in source_quarter_year for q, y in [("Q1", year), ("Q2", year)]):
+                return False
+        for year in temporal_request.get("mid_years", set()):
+            if not any((q, y) in source_quarter_year for q, y in [("Q2", year), ("Q3", year)]):
+                return False
+        for year in temporal_request.get("late_years", set()):
+            if not any((q, y) in source_quarter_year for q, y in [("Q3", year), ("Q4", year)]):
+                return False
+
+        return True
 
     def _citation_label(self, reporting_period: str, source_file: str, section: str | None) -> str:
         parts = [reporting_period, source_file]

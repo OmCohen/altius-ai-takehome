@@ -146,8 +146,9 @@ function renderMessage(role, text, sources = [], meta = null) {
 
   if (sources.length) {
     const filteredSources = sources.filter(s => (Number(s.score) || 0) >= 0.25);
+    const visibleSources = filteredSources.length ? filteredSources : sources.slice(0, 1);
     
-    if (filteredSources.length) {
+    if (visibleSources.length) {
       const citationsHeader = document.createElement('div');
       citationsHeader.className = 'citations-header';
       citationsHeader.textContent = 'Sources';
@@ -156,7 +157,7 @@ function renderMessage(role, text, sources = [], meta = null) {
       const citations = document.createElement('div');
       citations.className = 'citations';
 
-      filteredSources.forEach((source) => {
+      visibleSources.forEach((source) => {
       const card = document.createElement('details');
       card.className = 'citation';
       card.innerHTML = `
@@ -322,7 +323,7 @@ form.addEventListener('submit', async (event) => {
     if (payload.out_of_scope) {
       renderMessage(
         'assistant',
-        'I could not find enough support in the corpus for that question. Try narrowing the time period or asking about a specific report section.',
+        payload.answer || 'I could not find enough support in the corpus for that question. Try narrowing the time period or asking about a specific report section.',
         payload.sources || [],
         { provider: payload.provider, question },
       );

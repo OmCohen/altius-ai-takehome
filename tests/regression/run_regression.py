@@ -57,6 +57,43 @@ def contains_token(text: str, token: str) -> bool:
     return token.lower() in text.lower()
 
 
+def classify_answer(answer: str, out_of_scope: bool) -> str:
+    text = (answer or "").strip().lower()
+    if not text:
+        return "unknown"
+
+    refusal_markers = [
+        "couldn't find",
+        "could not find",
+        "not in the corpus",
+        "no relevant information",
+        "insufficient information",
+        "cannot determine",
+        "can't determine",
+        "not enough information",
+        "do not support an answer",
+        "does not support an answer",
+        "can't support",
+        "cannot support",
+    ]
+    partial_markers = [
+        "partial",
+        "limited",
+        "directional",
+        "best-effort",
+        "not disclosed",
+        "redacted",
+        "censor",
+        "inference",
+    ]
+
+    if out_of_scope or any(marker in text for marker in refusal_markers):
+        return "refusal"
+    if any(marker in text for marker in partial_markers):
+        return "partial"
+    return "supported"
+
+
 def periods_match_any(actual_periods: list[str], expected_tokens: list[str]) -> bool:
     if not expected_tokens:
         return True
@@ -72,6 +109,7 @@ def evaluate_case(case: dict[str, Any], response: dict[str, Any]) -> tuple[bool,
 
     source_periods = [str(source.get("reporting_period", "")) for source in sources]
     source_labels = [str(source.get("citation_label", "")) for source in sources]
+    answer_class = classify_answer(answer, out_of_scope)
 
     checks: list[CheckResult] = []
 
@@ -139,11 +177,23 @@ def evaluate_case(case: dict[str, Any], response: dict[str, Any]) -> tuple[bool,
             )
         )
 
+    expected_answer_class = str(expected.get("answer_class", "")).strip().lower()
+    if expected_answer_class:
+        checks.append(
+            CheckResult(
+                name="answer_class",
+                passed=(answer_class == expected_answer_class),
+                expected=expected_answer_class,
+                actual=answer_class,
+            )
+        )
+
     passed = all(check.passed for check in checks)
 
     actual_summary = {
         "provider": response.get("provider", "unknown"),
         "out_of_scope": out_of_scope,
+        "answer_class": answer_class,
         "source_count": len(sources),
         "source_periods": source_periods,
         "source_labels": source_labels,
@@ -206,11 +256,13 @@ def render_report(
             f"out_of_scope={expected.get('out_of_scope', False)}, "
             f"min_sources={expected.get('min_sources', 0)}, "
             f"required_terms_any={expected.get('must_contain_any', [])}, "
-            f"source_period_any={expected.get('source_period_any', [])}"
+            f"source_period_any={expected.get('source_period_any', [])}, "
+            f"answer_class={expected.get('answer_class', '')}"
         )
         lines.append(
             "- Actual behavior: "
             f"out_of_scope={actual['out_of_scope']}, "
+            f"answer_class={actual['answer_class']}, "
             f"source_count={actual['source_count']}, "
             f"provider={actual['provider']}, "
             f"source_periods={actual['source_periods']}"
