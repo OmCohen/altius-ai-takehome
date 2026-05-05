@@ -86,5 +86,7 @@
 - Canonical citation labels now flow from retrieval into answer generation and the browser UI.
 - Chat UI now shows a live loading state, specific error messages, and a retry button when requests fail.
 - Users can open a safe read-only preview for each cited source from the chat UI.
+- UI polished: removed all confidence badges, limited results to top 3 sources, added "Sources" header, hid low-confidence citations, added "Suggested follow-up questions:" label for clarity.
+- Commit: c51eb5d "Polish UI: remove confidence badges, limit to top 3 sources, add sources header, remove preview link, add follow-up label"
 
 ---
