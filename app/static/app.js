@@ -4,6 +4,81 @@ const questionInput = document.getElementById('question');
 const sendButton = document.getElementById('send-button');
 let loadingMessage = null;
 
+function getAnswerConfidence(sources = [], provider = '') {
+  if (!sources.length) {
+    return provider === 'none' ? 'No support' : '';
+  }
+
+  const topScore = Math.max(...sources.map((source) => Number(source.score) || 0));
+  if (topScore >= 0.45) {
+    return 'Strong support';
+  }
+  if (topScore >= 0.25) {
+    return 'Moderate support';
+  }
+  return '';
+}
+
+function buildFollowUps(question, sources = [], provider = '') {
+  const questionText = (question || '').toLowerCase();
+  const topSource = sources[0];
+  const period = topSource?.reporting_period || '';
+  const base = [];
+
+  if (questionText.includes('valuation')) {
+    base.push('Compare valuations to the prior quarter');
+  } else if (questionText.includes('strategy')) {
+    base.push('How did the strategy change year over year?');
+  } else if (questionText.includes('credit facility')) {
+    base.push('Summarize the credit facility usage trend');
+  } else if (questionText.includes('nav')) {
+    base.push('What drove the NAV change in this period?');
+  } else {
+    base.push('Compare this answer with the prior period');
+  }
+
+  if (period) {
+    base.push(`Show other sources from ${period}`);
+  }
+
+  return base.slice(0, 3);
+}
+
+function copyText(text) {
+  if (navigator.clipboard?.writeText) {
+    return navigator.clipboard.writeText(text);
+  }
+
+  const fallback = document.createElement('textarea');
+  fallback.value = text;
+  fallback.setAttribute('readonly', 'true');
+  fallback.style.position = 'absolute';
+  fallback.style.left = '-9999px';
+  document.body.appendChild(fallback);
+  fallback.select();
+  document.execCommand('copy');
+  fallback.remove();
+  return Promise.resolve();
+}
+
+function bindCopyButton(button, text, successLabel = 'Copied') {
+  button.addEventListener('click', async () => {
+    const original = button.textContent;
+    try {
+      await copyText(text);
+      button.textContent = successLabel;
+      window.setTimeout(() => {
+        button.textContent = original;
+      }, 1400);
+    } catch (error) {
+      button.textContent = 'Copy failed';
+      window.setTimeout(() => {
+        button.textContent = original;
+      }, 1400);
+    }
+  });
+}
+
 function setComposerState(isBusy, label = 'Ask') {
   sendButton.disabled = isBusy;
   sendButton.textContent = isBusy ? 'Thinking...' : label;
@@ -47,6 +122,21 @@ function renderMessage(role, text, sources = [], meta = null) {
 
   article.appendChild(bubble);
 
+  if (role === 'assistant') {
+    const header = document.createElement('div');
+    header.className = 'message-toolbar';
+
+    const copyButton = document.createElement('button');
+    copyButton.type = 'button';
+    copyButton.className = 'copy-button';
+    copyButton.textContent = 'Copy answer';
+    copyButton.style.marginLeft = 'auto';
+    bindCopyButton(copyButton, text);
+
+    header.appendChild(copyButton);
+    bubble.appendChild(header);
+  }
+
   if (role === 'assistant' && meta?.provider) {
     const answerMeta = document.createElement('div');
     answerMeta.className = 'answer-meta';
@@ -55,29 +145,74 @@ function renderMessage(role, text, sources = [], meta = null) {
   }
 
   if (sources.length) {
-    const citations = document.createElement('div');
-    citations.className = 'citations';
+    const filteredSources = sources.filter(s => (Number(s.score) || 0) >= 0.25);
+    
+    if (filteredSources.length) {
+      const citationsHeader = document.createElement('div');
+      citationsHeader.className = 'citations-header';
+      citationsHeader.textContent = 'Sources';
+      bubble.appendChild(citationsHeader);
 
-    sources.forEach((source) => {
+      const citations = document.createElement('div');
+      citations.className = 'citations';
+
+      filteredSources.forEach((source) => {
       const card = document.createElement('details');
       card.className = 'citation';
       card.innerHTML = `
         <summary class="citation-head">
           <span class="citation-label">${escapeHtml(source.citation_label || `${source.reporting_period} | ${source.source_file}`)}</span>
-          <span class="citation-file">Open source</span>
         </summary>
         <div class="citation-body">
           <div class="citation-meta">${escapeHtml(source.summary_file)}</div>
           <div class="citation-excerpt">${escapeHtml(source.excerpt)}</div>
           <div class="citation-actions">
-            <a class="citation-link" href="/preview/${encodeURIComponent(source.document_id)}" target="_blank" rel="noreferrer">Open read-only preview</a>
+            <button type="button" class="copy-button copy-citation-button">Copy citation</button>
           </div>
         </div>
       `;
+      const copyCitationButton = card.querySelector('.copy-citation-button');
+      if (copyCitationButton) {
+        bindCopyButton(
+          copyCitationButton,
+          `${source.citation_label || `${source.reporting_period} | ${source.source_file}`}\n${source.summary_file}\n${source.excerpt}`,
+          'Copied citation',
+        );
+      }
       citations.appendChild(card);
-    });
+      });
 
-    bubble.appendChild(citations);
+      bubble.appendChild(citations);
+    }
+  }
+
+  if (role === 'assistant') {
+    const followUps = document.createElement('div');
+    followUps.className = 'follow-up-section';
+    
+    const followUpLabel = document.createElement('div');
+    followUpLabel.className = 'follow-up-label';
+    followUpLabel.textContent = 'Suggested follow-up questions:';
+    followUps.appendChild(followUpLabel);
+    
+    const followUpRow = document.createElement('div');
+    followUpRow.className = 'follow-up-row';
+    const suggestions = buildFollowUps(meta?.question || '', sources, meta?.provider);
+
+    suggestions.forEach((suggestion) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'follow-up-chip';
+      button.textContent = suggestion;
+      button.addEventListener('click', () => {
+        questionInput.value = suggestion;
+        questionInput.focus();
+      });
+      followUpRow.appendChild(button);
+    });
+    
+    followUps.appendChild(followUpRow);
+    bubble.appendChild(followUps);
   }
 
   messages.appendChild(article);
@@ -189,12 +324,12 @@ form.addEventListener('submit', async (event) => {
         'assistant',
         'I could not find enough support in the corpus for that question. Try narrowing the time period or asking about a specific report section.',
         payload.sources || [],
-        { provider: payload.provider },
+        { provider: payload.provider, question },
       );
       return;
     }
 
-    renderMessage('assistant', payload.answer, payload.sources || [], { provider: payload.provider });
+    renderMessage('assistant', payload.answer, payload.sources || [], { provider: payload.provider, question });
   } catch (error) {
     clearLoadingMessage();
 

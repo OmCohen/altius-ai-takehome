@@ -59,7 +59,7 @@ class HybridRetriever:
         if self.reranker is not None:
             logger.info("Loaded reranker model '%s'", reranker_model_name)
 
-    def search(self, question: str, top_k: int = 8, max_sources: int = 4) -> List[SourceCitation]:
+    def search(self, question: str, top_k: int = 8, max_sources: int = 3) -> List[SourceCitation]:
         cleaned = question.strip()
         if not cleaned:
             return []

@@ -79,7 +79,7 @@ class Retriever:
         self.vectorizer = TfidfVectorizer(stop_words="english", ngram_range=(1, 2), max_features=12000)
         self.matrix = self.vectorizer.fit_transform([chunk.searchable_text for chunk in corpus.chunks])
 
-    def search(self, question: str, top_k: int = 8, max_sources: int = 4) -> list[SourceCitation]:
+    def search(self, question: str, top_k: int = 8, max_sources: int = 3) -> list[SourceCitation]:
         cleaned = question.strip()
         if not cleaned:
             return []

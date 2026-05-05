@@ -180,6 +180,51 @@ h1 {
   white-space: pre-wrap;
 }
 
+.message-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.confidence-badge,
+.copy-button {
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 0.76rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.confidence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(248, 198, 109, 0.34);
+  background: rgba(248, 198, 109, 0.12);
+  color: var(--accent);
+}
+
+.copy-button {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.copy-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(248, 198, 109, 0.38);
+  background: rgba(248, 198, 109, 0.12);
+}
+
+.copy-citation-button {
+  width: fit-content;
+}
+
 .answer-meta {
   display: inline-block;
   margin: 12px 0 0 0;
@@ -204,10 +249,21 @@ h1 {
   border: 1px solid rgba(248, 198, 109, 0.22);
 }
 
+.citations-header {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 16px;
+  margin-bottom: 10px;
+  display: block;
+}
+
 .citations {
   display: grid;
   gap: 10px;
-  margin-top: 14px;
+  margin-top: 10px;
 }
 
 .citation {
@@ -274,6 +330,9 @@ h1 {
 
 .citation-actions {
   margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .citation-link,
@@ -374,6 +433,45 @@ h1 {
   color: var(--muted);
   font-size: 0.82rem;
   text-align: right;
+}
+
+.follow-up-section {
+  margin-top: 16px;
+}
+
+.follow-up-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.follow-up-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.follow-up-chip {
+  border: 1px solid rgba(114, 214, 201, 0.22);
+  background: rgba(114, 214, 201, 0.08);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.85rem;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.follow-up-chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(114, 214, 201, 0.42);
+  background: rgba(114, 214, 201, 0.14);
 }
 
 .composer {
