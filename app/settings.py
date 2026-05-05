@@ -46,5 +46,5 @@ def load_settings() -> Settings:
         top_k=int(os.getenv("RETRIEVAL_TOP_K", "8")),
         max_sources=int(os.getenv("MAX_CITATIONS", "4")),
         similarity_threshold=float(os.getenv("SIMILARITY_THRESHOLD", "0.08")),
-        temperature=float(os.getenv("LLM_TEMPERATURE", "0.2")),
+        temperature=float(os.getenv("LLM_TEMPERATURE", "0.0")),
     )
