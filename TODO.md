@@ -44,15 +44,20 @@
   - ✅ Docker image builds (2.44GB) and app starts successfully
   - ✅ Tested `/health` and `/search` endpoints — app fully functional
 
-- [ ] **Enhance answer quality — better citations format**
-  - Review citation clarity in responses
-  - Ensure source file + reporting period always shown
-  - Test citation accuracy on retrieved passages
+- [x] **Enhance answer quality — better citations format**
+  - ✅ Added canonical citation labels to retrieved sources
+  - ✅ UI now shows reporting period, source file, and summary file consistently
+  - ✅ Answer text and OpenAI source prompts use the same citation format
 
-- [ ] **Polish UI/UX — loading states, error handling**
-  - Add visual feedback while waiting for response
-  - Improve error messages for failed queries
-  - Test mobile responsiveness (if applicable)
+- [x] **Polish UI/UX — loading states, error handling**
+  - ✅ Added a loading bubble with animated dots and disabled composer state
+  - ✅ Added specific retryable error messages for timeout, server, and validation failures
+  - ✅ Preserved the draft question on failure and tightened mobile composer behavior
+
+- [x] **Add read-only source preview**
+  - ✅ Citations now expand from the chat UI and link to a read-only preview page
+  - ✅ Preview route is allowlisted by document id, not raw filesystem path
+  - ✅ Preview page shows the full markdown summary in a read-only panel
 
 - [ ] **Add basic regression test suite**
   - Create 5–10 labeled Q&A pairs
@@ -77,5 +82,9 @@
 ## Progress Notes
 
 *(Use this section to track blockers, decisions, and learnings as you work)*
+
+- Canonical citation labels now flow from retrieval into answer generation and the browser UI.
+- Chat UI now shows a live loading state, specific error messages, and a retry button when requests fail.
+- Users can open a safe read-only preview for each cited source from the chat UI.
 
 ---

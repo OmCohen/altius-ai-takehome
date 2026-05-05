@@ -111,17 +111,25 @@ class Retriever:
             return []
         return [
             SourceCitation(
+                document_id=item.summary_file.replace("_summary_public.md", ""),
                 summary_file=item.summary_file,
                 source_file=item.source_file,
                 reporting_period=item.reporting_period,
                 date=item.date,
                 deal_name=item.deal_name,
                 section=item.section,
+                citation_label=self._citation_label(item.reporting_period, item.source_file, item.section),
                 excerpt=item.excerpt,
                 score=round(item.score, 4),
             )
             for item in ranked_sources
         ]
+
+    def _citation_label(self, reporting_period: str, source_file: str, section: str | None) -> str:
+        parts = [reporting_period, source_file]
+        if section:
+            parts.append(section)
+        return " | ".join(parts)
 
     def _signal_tokens(self, question: str) -> set[str]:
         tokens = {

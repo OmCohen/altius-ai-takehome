@@ -121,14 +121,22 @@ class HybridRetriever:
             chunk = item["chunk"]
             results.append(
                 SourceCitation(
+                    document_id=chunk.document_id,
                     summary_file=chunk.summary_file,
                     source_file=chunk.source_file,
                     reporting_period=chunk.reporting_period,
                     date=chunk.date,
                     deal_name=chunk.deal_name,
                     section=chunk.section,
+                    citation_label=self._citation_label(chunk.reporting_period, chunk.source_file, chunk.section),
                     excerpt=chunk.text[:360].strip(),
                     score=round(float(item["score"]), 4),
                 )
             )
         return results
+
+    def _citation_label(self, reporting_period: str, source_file: str, section: str | None) -> str:
+        parts = [reporting_period, source_file]
+        if section:
+            parts.append(section)
+        return " | ".join(parts)

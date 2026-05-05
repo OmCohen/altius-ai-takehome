@@ -52,13 +52,13 @@ class AnswerEngine:
         if len(sources) == 1:
             source = sources[0]
             return (
-                f"The most relevant material is in {source.reporting_period} ({source.summary_file}, {source.section}). "
+                f"The most relevant material is in {source.citation_label}. "
                 f"{source.excerpt}"
             )
 
         intro = "The corpus points to these relevant passages:"
         bullets = [
-            f"- {source.reporting_period} ({source.section}): {source.excerpt}"
+            f"- {source.citation_label}: {source.excerpt}"
             for source in sources[: self.settings.max_sources]
         ]
         return "\n".join([intro, *bullets])
@@ -72,7 +72,7 @@ class AnswerEngine:
         source_lines = []
         for index, source in enumerate(sources, start=1):
             source_lines.append(
-                f"[{index}] {source.reporting_period} | {source.summary_file} | {source.section}\n"
+                f"[{index}] {source.citation_label}\n"
                 f"Excerpt: {source.excerpt}"
             )
 

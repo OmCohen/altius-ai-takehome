@@ -12,7 +12,7 @@ integration tests.
 
 from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -53,6 +53,22 @@ def index(request: Request):
                 "How did the manager describe the use of the subscription credit facility across 2024?",
                 "Has the fund's strategy shifted between 2022 and 2025?",
             ],
+        },
+    )
+
+
+@app.get("/preview/{document_id}", response_class=HTMLResponse)
+def preview_document(request: Request, document_id: str):
+    document = next((item for item in corpus.documents if item.document_id == document_id), None)
+    if document is None:
+        raise HTTPException(status_code=404, detail="Document not found")
+
+    return templates.TemplateResponse(
+        "preview.html",
+        {
+            "request": request,
+            "app_title": settings.app_title,
+            "document": document,
         },
     )
 

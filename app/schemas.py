@@ -16,15 +16,17 @@ class ChatRequest(BaseModel):
 class SourceCitation(BaseModel):
     """Represents a single retrieved source with an excerpt and score.
 
-    Clients should display `summary_file`, `reporting_period`, `section`, and
-    `excerpt` when showing citations; `score` is a diagnostic float.
+    Clients should display `citation_label`, `summary_file`, and `excerpt`
+    when showing citations; `score` is a diagnostic float.
     """
+    document_id: str
     summary_file: str
     source_file: str
     reporting_period: str
     date: str
     deal_name: str | None = None
     section: str | None = None
+    citation_label: str
     excerpt: str
     score: float
 
