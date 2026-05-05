@@ -1,0 +1,77 @@
+[
+  {
+    "id": "C01",
+    "label": "Q1 2025 valuation commentary",
+    "question": "What was the fund's commentary on valuations in Q1 2025?",
+    "expected": {
+      "out_of_scope": false,
+      "min_sources": 1,
+      "must_contain_any": ["valuation", "markdown", "net asset value", "nav"],
+      "source_period_any": ["Q1 2025", "2025"]
+    }
+  },
+  {
+    "id": "C02",
+    "label": "2024 subscription facility usage",
+    "question": "How did the manager describe the use of the subscription credit facility across 2024?",
+    "expected": {
+      "out_of_scope": false,
+      "min_sources": 2,
+      "must_contain_any": ["subscription", "credit facility", "capital call", "liquidity"],
+      "source_period_any": ["2024"]
+    }
+  },
+  {
+    "id": "C03",
+    "label": "Strategy shift from 2022 to 2025",
+    "question": "Has the fund's strategy shifted between 2022 and 2025?",
+    "expected": {
+      "out_of_scope": false,
+      "min_sources": 2,
+      "must_contain_any": ["strategy", "shift", "no material", "mandate"],
+      "source_period_any": ["2022", "2025"]
+    }
+  },
+  {
+    "id": "C04",
+    "label": "Q3 2023 NAV with censored data",
+    "question": "What can we infer about NAV in Q3 2023 from the summaries?",
+    "expected": {
+      "out_of_scope": false,
+      "min_sources": 1,
+      "must_contain_any": ["nav", "fair value", "above cost", "censor"],
+      "source_period_any": ["Q3 2023", "2023"]
+    }
+  },
+  {
+    "id": "C05",
+    "label": "Out-of-scope dividend policy",
+    "question": "What is the fund's dividend distribution policy?",
+    "expected": {
+      "out_of_scope": true,
+      "min_sources": 0,
+      "must_contain_any": ["couldn't find", "not found", "not in the corpus", "no relevant information"]
+    }
+  },
+  {
+    "id": "C06",
+    "label": "Paraphrased 2025 valuation question",
+    "question": "In early 2025, did portfolio marks move up or down?",
+    "expected": {
+      "out_of_scope": false,
+      "min_sources": 1,
+      "must_contain_any": ["down", "markdown", "decline", "net deficit"],
+      "source_period_any": ["2025"]
+    }
+  },
+  {
+    "id": "C07",
+    "label": "Clearly unsupported period",
+    "question": "What was the fund's NAV in Q4 2018?",
+    "expected": {
+      "out_of_scope": true,
+      "min_sources": 0,
+      "must_contain_any": ["couldn't find", "not found", "not in the corpus", "no relevant information"]
+    }
+  }
+]

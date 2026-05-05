@@ -40,6 +40,18 @@ OpenAI support is optional and controlled by environment variables. This keeps t
 
 With more time, I would measure retrieval quality on a labeled question set, compare exact-match and trend questions, and review citation accuracy separately from answer quality. I would also add a small regression suite with the sample questions and a few known out-of-scope prompts.
 
+## Regression Testing
+
+A basic behavior regression suite is included in `tests/regression/`.
+
+Run it from the repo root:
+
+```bash
+python tests/regression/run_regression.py
+```
+
+This produces `tests/regression/latest_report.md` with expected vs actual behavior for each labeled case.
+
 ## Limitations
 
 The current retrieval stack is lexical, so very paraphrased questions can miss relevant passages. I would next add hybrid retrieval with embeddings, better section-aware ranking, and more structured citation traces that point to exact evidence sentences.

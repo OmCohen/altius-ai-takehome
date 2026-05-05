@@ -59,10 +59,10 @@
   - ✅ Preview route is allowlisted by document id, not raw filesystem path
   - ✅ Preview page shows the full markdown summary in a read-only panel
 
-- [ ] **Add basic regression test suite**
-  - Create 5–10 labeled Q&A pairs
-  - Build simple test harness to run them
-  - Document expected vs actual behavior
+- [x] **Add basic regression test suite**
+  - ✅ Added 7 labeled Q&A pairs in `tests/regression/cases.json`
+  - ✅ Added harness in `tests/regression/run_regression.py` (internal + HTTP modes)
+  - ✅ Added generated report format in `tests/regression/latest_report.md` with expected vs actual behavior
 
 ---
 
@@ -88,5 +88,6 @@
 - Users can open a safe read-only preview for each cited source from the chat UI.
 - UI polished: removed all confidence badges, limited results to top 3 sources, added "Sources" header, hid low-confidence citations, added "Suggested follow-up questions:" label for clarity.
 - Commit: c51eb5d "Polish UI: remove confidence badges, limit to top 3 sources, add sources header, remove preview link, add follow-up label"
+- Added a basic regression suite (7 labeled cases + runnable harness + markdown report output) to catch answer-quality regressions.
 
 ---
