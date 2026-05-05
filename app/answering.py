@@ -45,7 +45,49 @@ class AnswerEngine:
         return self._extractive_answer(question, sources), "extractive"
 
     def is_out_of_scope(self, answer: str) -> bool:
-        return answer.strip().lower().startswith("i couldn't find relevant information")
+        """Heuristic to detect LLM refusals or honest 'not found' replies.
+
+        Returns True when the answer is an explicit refusal or states the
+        information is not present in the corpus. This keeps the API's
+        `out_of_scope` flag aligned with natural LLM phrasing instead of a
+        single exact prefix.
+        """
+        if not answer:
+            return True
+
+        text = answer.strip().lower()
+
+        # Fast-path for legacy exact match
+        if text.startswith("i couldn't find relevant information"):
+            return True
+
+        refusal_phrases = [
+            "couldn't find",
+            "could not find",
+            "couldn't locate",
+            "not in the corpus",
+            "not stated",
+            "not mentioned",
+            "no relevant information",
+            "i can't determine",
+            "i cannot determine",
+            "i can't find",
+            "i cannot find",
+            "i don't see",
+            "i do not see",
+            "unable to determine",
+            "cannot determine",
+            "can't determine",
+            "do not state",
+            "do not mention",
+            "don't mention",
+        ]
+
+        for phrase in refusal_phrases:
+            if phrase in text:
+                return True
+
+        return False
 
     def _extractive_answer(self, question: str, sources: Sequence[SourceCitation]) -> str:
         """Produce a short, citation-first answer from the provided sources."""

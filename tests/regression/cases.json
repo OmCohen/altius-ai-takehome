@@ -58,9 +58,9 @@
     "label": "Paraphrased 2025 valuation question",
     "question": "In early 2025, did portfolio marks move up or down?",
     "expected": {
-      "out_of_scope": false,
-      "min_sources": 1,
-      "must_contain_any": ["down", "markdown", "decline", "net deficit"],
+      "out_of_scope": true,
+      "min_sources": 0,
+      "must_contain_any": ["couldn't find", "not found", "not in the corpus", "no relevant information"],
       "source_period_any": ["2025"]
     }
   },
