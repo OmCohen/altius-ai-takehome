@@ -53,20 +53,6 @@ OpenAI support is optional and controlled by environment variables. This keeps t
 
 With more time, evaluation would be expanded to a larger labeled set across lookup, trend, temporal, and out-of-scope prompts; retrieval and answer quality would be scored separately; and citation precision/recall would be tracked explicitly. Automated threshold sweeps for temporal and confidence gating would be added to calibrate refusal vs answer tradeoffs.
 
-## Regression Testing
-
-A basic behavior regression suite is included in `tests/regression/`.
-
-Run it from the repo root:
-
-```bash
-python tests/regression/run_regression.py
-```
-
-This produces `tests/regression/latest_report.md` with expected vs actual behavior for each labeled case.
-
-For day-to-day iteration, generated regression snapshots are ignored so the repository stays focused on source code and the current baseline report.
-
 ## Known Limitations and Next Improvements
 
 The current retrieval stack is still lightweight and in-memory, so quality depends on tuning heuristics (score thresholds, temporal checks, and token coverage). Very nuanced analyst-style synthesis can still be shallow when evidence is sparse.

@@ -18,6 +18,8 @@ __pycache__/
 # Generated evaluation artifacts
 tests/regression/latest_report*.md
 TESTING_RESULTS.md
+TODO.md
+Altuis_demands_readme.md
 
 # IDE / editor
 .idea/
