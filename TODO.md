@@ -79,6 +79,40 @@
 
 ---
 
+## Suggested Improvements (from Regression Testing)
+
+Based on regression suite findings, these improvements would strengthen answer quality and retrieval:
+
+- [ ] **Apply score-threshold gating in HybridRetriever**
+  - Filter out sources below similarity threshold (reduce irrelevant sources returned)
+  - Consequences: fewer false positives in out-of-scope detection, cleaner answer generation
+
+- [ ] **Improve temporal/period-aware retrieval**
+  - Add soft bias toward sources matching the reporting period mentioned in the question (e.g., "early 2025" → prioritize Q1/Q2)
+  - Implement confidence scoring based on temporal specificity match
+  - Helps paraphrased questions like "In early 2025, did marks move up or down?"
+
+- [ ] **Enhance refusal/uncertainty detection in answer engine**
+  - Already improved `is_out_of_scope()` to catch 20+ refusal phrasings
+  - Next: detect partial/conditional answers (e.g., "only Q3 2025 data available") and flag uncertainty appropriately
+  - Could use embeddings to detect semantic "I don't know" even if phrasing varies
+
+- [ ] **Implement semantic matching for test assertions**
+  - Current tests use substring token matching, which is brittle to phrasing variations
+  - Alternative: use embeddings to compare answer semantics to expected refusal "canonical forms" (cosine similarity > threshold)
+  - Reduces false negatives for out-of-scope detection
+
+- [ ] **Better handling of censored/partial data**
+  - When corpus lacks specific data (e.g., exact NAV figures), explicitly acknowledge in answer
+  - Could add a flag to SourceCitation to mark censored sections
+  - Helps manage expectations for questions on sensitive financial info
+
+- [ ] **Expand corpus with synthetic early-year data or time-series context**
+  - Current corpus (Q2 2021–Q3 2025) has gaps at the start
+  - Adding quarterly summaries for Q1–Q2 2021 or providing multi-year trends would improve paraphrase tolerance
+
+---
+
 ## Progress Notes
 
 *(Use this section to track blockers, decisions, and learnings as you work)*
