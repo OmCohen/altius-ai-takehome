@@ -15,9 +15,11 @@ This avoids brittle exact-string matching while still catching meaningful regres
 
 ## Files
 
-- `cases.json`: 7 labeled Q&A cases.
+- `cases.json`: 10 labeled Q&A cases.
 - `run_regression.py`: harness that executes cases and scores pass/fail.
-- `latest_report.md`: generated report with expected vs actual behavior.
+- `latest_report.md`: generated report with expected vs actual behavior (generated artifact; intentionally git-ignored — do not commit local reports).
+
+Note: `latest_report.md` is a generated artifact produced by the test harness and is intentionally git-ignored (see `.gitignore`). Do not commit local or ephemeral reports to the repository; keep regression cases and the runner script under version control instead.
 
 ## Run
 
