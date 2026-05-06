@@ -19,37 +19,6 @@ function getAnswerConfidence(sources = [], provider = '') {
   return '';
 }
 
-function buildFollowUps(question, sources = [], provider = '') {
-  if (provider === 'none' || !sources.length) {
-    return [];
-  }
-
-  const topScore = Math.max(...sources.map((source) => Number(source.score) || 0));
-  if (topScore < 0.25) {
-    return [];
-  }
-
-  const questionText = (question || '').toLowerCase();
-  const topSource = sources[0];
-  const period = topSource?.reporting_period || '';
-  const base = [];
-
-  if (questionText.includes('valuation')) {
-    base.push('Compare valuations to the prior quarter');
-  } else if (questionText.includes('strategy')) {
-    base.push('How did the strategy change year over year?');
-  } else if (questionText.includes('credit facility')) {
-    base.push('Summarize the credit facility usage trend');
-  } else if (questionText.includes('nav')) {
-    base.push('What drove the NAV change in this period?');
-  }
-
-  if (period) {
-    base.push(`Show other sources from ${period}`);
-  }
-
-  return base.slice(0, 3);
-}
 
 function copyText(text) {
   if (navigator.clipboard?.writeText) {
@@ -194,40 +163,7 @@ function renderMessage(role, text, sources = [], meta = null) {
     }
   }
 
-  if (role === 'assistant') {
-    const followUps = document.createElement('div');
-    followUps.className = 'follow-up-section';
-    
-    const followUpLabel = document.createElement('div');
-    followUpLabel.className = 'follow-up-label';
-    followUpLabel.textContent = 'Suggested follow-up questions:';
-    followUps.appendChild(followUpLabel);
-    
-    const followUpRow = document.createElement('div');
-    followUpRow.className = 'follow-up-row';
-    const suggestions = buildFollowUps(meta?.question || '', sources, meta?.provider);
-
-    if (!suggestions.length) {
-      messages.appendChild(article);
-      messages.scrollTop = messages.scrollHeight;
-      return article;
-    }
-
-    suggestions.forEach((suggestion) => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'follow-up-chip';
-      button.textContent = suggestion;
-      button.addEventListener('click', () => {
-        questionInput.value = suggestion;
-        questionInput.focus();
-      });
-      followUpRow.appendChild(button);
-    });
-    
-    followUps.appendChild(followUpRow);
-    bubble.appendChild(followUps);
-  }
+  
 
   messages.appendChild(article);
   messages.scrollTop = messages.scrollHeight;
