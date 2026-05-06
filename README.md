@@ -2,7 +2,7 @@
 
 This repository contains a chatbot for PE quarterly report summaries. It loads the provided corpus, retrieves relevant evidence with a hybrid pipeline, and returns answers in a browser UI with citations to source summaries and reporting periods.
 
-This repository contains the deliverables requested in the assignment brief (source code, `Dockerfile` + `docker-compose.yml`, `README.md`, and `.env.example`). For the full task description and evaluation criteria, see [Altuis_demands_readme.md](Altuis_demands_readme.md).
+This repository contains the deliverables requested in the assignment brief (source code, `Dockerfile` + `docker-compose.yml`, `README.md`, and `.env.example`).
 
 ## Setup and Run
 
